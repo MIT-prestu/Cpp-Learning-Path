@@ -21,6 +21,12 @@ As the starting point of this repository, I implemented and iteratively refactor
 * **复用性与正交设计**：拒绝冗余。`operator+` 完美复用 `operator+=`，比较运算符（如 `<`、`<=`）基于 `operator>` 与 `operator==` 进行正交取反复用，保证了代码的高度可维护性。
 * **Code Reusability & Orthogonal Design**: Eliminated redundancy. `operator+` seamlessly reuses `operator+=`, while comparison operators (e.g., `<`, `<=`) are orthogonally built upon `operator>` and `operator==` for high maintainability.
 
+* **高内聚低耦合的日期差算法**：在计算两个日期相差天数的 `operator-` 中，通过复用已有的比较运算符和自增运算符实现精确计数，并设计了符号标记位，优雅地处理了大小日期颠倒引起的正负号转换问题。
+* **Highly Cohesive & Loosely Coupled Date Difference Algorithm**: In `operator-` for calculating delta days, reused existing comparison and increment operators for accurate counting, and designed a sign flag to elegantly handle positive/negative signs caused by reversed date order.
+
+* **标准流接口拓展与友元支持**：重载了 `operator<<` 和 `operator>>`，实现了符合 C++ 标准库规范的流式输入输出。在类内部将其声明为友元函数（`friend`），既保证了外部调用的无缝流式链，又合理地开放了对私有成员的访问权限。
+* **Standard Stream Interface Extension & Friend Support**: Overloaded `operator<<` and `operator>>` to support streaming I/O complying with C++ standard library specifications, declaring them as `friend` functions to maintain a seamless external syntax chain while logically granting private access.
+
 * **极致性能优化**：将高频调用的月天数查找表 `GetMonth` 声明为 `static` 静态数组，避免了函数反复调用在栈上重复创建对象的开销。
 * **Performance Optimization**: Declared the high-frequency lookup table `GetMonth` as a `static` array, preventing the overhead of repeatedly recreating objects on the stack.
 
@@ -46,5 +52,4 @@ As the starting point of this repository, I implemented and iteratively refactor
 本仓库将采取渐进式迭代的原则，持续向更深层次的底层逻辑演进：
 Adhering to the principle of incremental iteration, this repository will continuously evolve towards deeper low-level logics:
 
-- [ ] **Date 类特性扩展 (Date Class Extension)**
 - [ ] **C++ 核心内存管理深入 (Deep Dive into C++ Memory Management)**
