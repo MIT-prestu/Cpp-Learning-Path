@@ -1,55 +1,65 @@
-# 🚀 C++ Mastery Journey | C++ 进阶与工程实践之路
+# 🚀 C++ 极致进阶与工业级实践
+# 🚀 C++ Ultimate Progress and Industrial Practice
 
-欢迎来到我的 C++ 学习与技术沉淀仓库。
-Welcome to my C++ repository for technical accumulation.
+本项目系统记录了我独立手敲的高性能 C++ 自定义类库，专注于深度还原标准库的底层行为与内存布局。
+This project systematically records my self-implemented high-performance custom C++ classes, focusing on deeply recreating the low-level behavior and memory layout of the standard library.
 
-本项目用于系统化记录我掌握 C++ 的每一步足迹，重点在于通过独立实践，追求严谨的工程规范、极致的边界处理与良好的代码复用性。
-This project is dedicated to systematically recording my footprints of mastering C++, focusing on robust engineering standards, meticulous boundary handling, and high code reusability through independent practice.
-
-所有的代码实现均严格遵循现代 C++ 最佳实践，并包含详尽的边界测试与持续重构思考。
-All implementations strictly adhere to modern C++ best practices and are equipped with rigorous boundary testing and continuous refactoring reflections.
+本项目中所展示的自定义 String 类的所有核心底层逻辑与工业级优化，均在一天内高强度独立手敲实现。
+All core low-level logics and industrial-grade optimizations of the custom String class demonstrated in this project were hand-coded and achieved within a single high-intensity day.
 
 ---
-
-## 🛠️ 当前里程碑：工业级 Date 类的设计与重构 (Current Milestone: Engineering-Grade Date Class)
-
-### 核心亮点与工程思考 (Key Highlights & Engineering Reflections)
-
-作为本仓库的起点，我实现并多次重构了一个高健壮性的 `Date` 日期类。在开发过程中，我深入思考并解决了以下工业级开发所看重的边界与性能问题：
-As the starting point of this repository, I implemented and iteratively refactored a highly robust `Date` class, deeply exploring boundary cases and performance tradeoffs valued in enterprise-level development:
-
-* **复用性与正交设计**：拒绝冗余。`operator+` 完美复用 `operator+=`，比较运算符（如 `<`、`<=`）基于 `operator>` 与 `operator==` 进行正交取反复用，保证了代码的高度可维护性。
-* **Code Reusability & Orthogonal Design**: Eliminated redundancy. `operator+` seamlessly reuses `operator+=`, while comparison operators (e.g., `<`, `<=`) are orthogonally built upon `operator>` and `operator==` for high maintainability.
-
-* **高内聚低耦合的日期差算法**：在计算两个日期相差天数的 `operator-` 中，通过复用已有的比较运算符和自增运算符实现精确计数，并设计了符号标记位，优雅地处理了大小日期颠倒引起的正负号转换问题。
-* **Highly Cohesive & Loosely Coupled Date Difference Algorithm**: In `operator-` for calculating delta days, reused existing comparison and increment operators for accurate counting, and designed a sign flag to elegantly handle positive/negative signs caused by reversed date order.
-
-* **标准流接口拓展与友元支持**：重载了 `operator<<` 和 `operator>>`，实现了符合 C++ 标准库规范的流式输入输出。在类内部将其声明为友元函数（`friend`），既保证了外部调用的无缝流式链，又合理地开放了对私有成员的访问权限。
-* **Standard Stream Interface Extension & Friend Support**: Overloaded `operator<<` and `operator>>` to support streaming I/O complying with C++ standard library specifications, declaring them as `friend` functions to maintain a seamless external syntax chain while logically granting private access.
-
-* **极致性能优化**：将高频调用的月天数查找表 `GetMonth` 声明为 `static` 静态数组，避免了函数反复调用在栈上重复创建对象的开销。
-* **Performance Optimization**: Declared the high-frequency lookup table `GetMonth` as a `static` array, preventing the overhead of repeatedly recreating objects on the stack.
-
-* **严谨的边界与负数处理**：重写了 `operator+=` 和 `operator-=` 的借位进位逻辑，全面覆盖了大小月、闰年跨月跨年的循环借位，并完美支持了传入负数天数（如 `date += -5`）的自动平滑转换。
-* **Rigorous Boundary & Negative Input Handling**: Rewrote borrowing/carrying logic for `operator+=` and `operator-=`, perfectly supporting negative days (e.g., `date += -5`) with cyclic cross-month/cross-year adjustments.
-
-* **C++ 规范与内存安全**：
-* **C++ Standards & Memory Safety**:
-
-    * 严格区分前置与后置 `++/--`。后置运算符正确返回临时局部对象的副本（而非野引用），杜绝了悬空引用导致的内存崩溃隐患。
-    * Strictly distinguished between prefix and postfix `++/--`. Postfix operators correctly return a copy of the temporary object rather than a dangling reference, eliminating potential crashes caused by wild references.
-
-    * 在赋值运算符重载中，使用 `this != &d` 进行高效的指针地址比对，防止自我赋值引发的无效开销。
-    * Utilized `this != &d` in the assignment operator for highly efficient pointer address comparison, avoiding invalid overhead during self-assignment.
-
-    * 为所有只读成员函数规范化加上 `const` 限定符。
-    * Standardized read-only member functions with trailing `const` qualifiers.
-
 ---
 
-## 🎯 下一步演进计划 (Next Steps & Upcoming Milestone)
+## 🛠️ 当前主打里程碑：一日封顶全功能 String
+## 🛠️ Current Key Milestone: One-Day Completion of Full-Featured String
 
-本仓库将采取渐进式迭代的原则，持续向更深层次的底层逻辑演进：
-Adhering to the principle of incremental iteration, this repository will continuously evolve towards deeper low-level logics:
+### 1. 现代资源管理与写安全
+### 1. Modern Resource Management and Safe Copying
 
-- [ ] **C++ 核心内存管理深入 (Deep Dive into C++ Memory Management)**
+我彻底摒弃了浅拷贝的物理隐患，全盘采用现代 Copy-and-Swap 拓扑范式。
+I abandoned physical hazards of shallow copies, fully adopting the modern Copy-and-Swap paradigm.
+
+通过临时对象与堆内存指针交换，让编译器自动托管旧资源释放，确保了强异常安全性。
+By swapping pointers with temporary objects, the compiler automatically manages resource release to ensure strong exception safety.
+
+### 2. 区间修改与无符号数防御
+### 2. Range Modification and Unsigned Integer Defense
+
+我攻克了任意位置区间插入与防无符号溢出截断擦除的硬核底层机制。
+I conquered the underlying mechanisms of range insertion and anti-unsigned-overflow erasure.
+
+在 `erase` 中将有风险的加法逻辑重构为安全的减法判定（如 `len >= _size - pos`），彻底封锁了内存越界隐患。
+Refactored risky addition checks in `erase` into safe subtraction evaluations (e.g., `len >= _size - pos`), completely blocking out-of-bounds memory risks.
+
+### 3. 指针算术高效查找
+### 3. High-Performance Search via Pointer Arithmetic
+
+在子串检索中，直接利用命中指针与字符串首地址做差（`ptr - _str`）的拓扑运算快速导出绝对数组下标。
+The absolute array index is derived directly through a topological operation of subtracting the base address from the hit pointer (`ptr - _str`).
+
+这成功避免了低效的二次遍历，并确立了严格的常量正确性。
+This successfully avoids inefficient nested scans and strictly enforces read-only semantics.
+
+### 4. 高性能栈缓冲流控
+### 4. High-Performance Stack-Buffered Stream Control
+
+为改变单字符追加导致频繁触发 `new/delete` 重新分配堆内存的现状，引入了 128 字节的局部栈缓冲区。
+To prevent high-frequency heap reallocations (`new/delete`) triggered by character-by-character appending, a 128-byte local stack buffer was introduced.
+
+采用“以百代一”的批量追加策略（Batch-Flushing），将堆空间分配频次降低了数个数量级。
+A batch-flushing strategy reduces the frequency of dynamic heap allocations by orders of magnitude.
+
+---
+---
+
+## 📦 已归档并调通的模块
+## 📦 Archived and Verified Modules
+
+* **工业级日期类 (Date Class)**：完整重载了日期全套算术与关系比较运算符，并在构造函数中设计了严格的闰年和合法性多重拦截机制。
+* **Industrial Date Class**: Fully overloaded complete arithmetic and relational operators of Date, with strict leap year and validation interception mechanisms designed within the constructor.
+
+* **双重迭代器 (Dual Iterators)**：纯手工包装原生指针实现了 `iterator` 与 `const_iterator`，使容器天然支持基于范围的 `for` 循环。
+* **Dual Iterators**: Manually wrapped raw pointers to implement `iterator` and `const_iterator`, enabling native support for range-based `for` loops.
+
+---
+---
